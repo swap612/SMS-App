@@ -10,8 +10,8 @@ import { SMS } from '@ionic-native/sms';
 export class HomePage {
   sms_var: any;
   smsList: any = [];
-  constructor(public navCtrl: NavController, public sms: SMS, public androidPermission: AndroidPermissions, public platform: Platform) {
-
+  constructor(public navCtrl: NavController, public androidPermission: AndroidPermissions, public platform: Platform) {
+    this.checkPermission();
   }
 
   //checks the permission and ask for grant
