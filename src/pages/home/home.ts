@@ -1,58 +1,58 @@
 import { Component } from '@angular/core';
 import { NavController, Platform } from 'ionic-angular';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
-import { SMS } from '@ionic-native/sms';
-
+// import { SMS } from '@ionic-native/sms';
+declare var SMS:any;
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  sms_var: any;
-  smsList: any = [];
+
+  smsList:any=[];
   constructor(public navCtrl: NavController, public androidPermission: AndroidPermissions, public platform: Platform) {
-    this.checkPermission();
+     this.checkPermission();
   }
 
   //checks the permission and ask for grant
   checkPermission() {
-    this.androidPermission.checkPermission
-      (this.androidPermission.PERMISSION.READ_SMS).then(
-        success => {
-          this.ReadSmsList();
-        },
-        err => {
-          this.androidPermission.requestPermission
-            (this.androidPermission.PERMISSION.READ_SMS).
-            then(success => {
-              this.ReadSmsList();
-            },
-              err => {
-                alert("cancelled")
-              });
-        });
+    // alert("checkpermiassion")
+   // ionViewDidEnter(){
 
-    this.androidPermission.requestPermissions
-      ([this.androidPermission.PERMISSION.READ_SMS]);
+    this.androidPermission.checkPermission (this.androidPermission.PERMISSION.READ_SMS).then(
+      success => {
+        this.ReadSmsList();
+      },
+      err => {
+        this.androidPermission.requestPermission (this.androidPermission.PERMISSION.READ_SMS).then(
+          success => {
+            this.ReadSmsList();
+          },
+          err => {
+            alert("cancelled")
+          });
+      });
 
+    this.androidPermission.requestPermissions([this.androidPermission.PERMISSION.READ_SMS]);
 
   }
 
-  ReadSmsList(){
-    this.platform.ready().then((readySource)=>{
-      let option ={
-        box:'inbox',
-        indexFrom: 0,
-        maxCount: 20
+  ReadSmsList() {
+    this.platform.ready().then((readySource) => {
+      let filter = {
+        box: 'inbox',            // 'inbox' (default), 'sent', 'draft'
+        indexFrom: 0,            // start from index 0
+        maxCount: 2000,             // count of SMS to return each time
+        
       };
 
-      if(this.sms_var)
-      this.sms_var.listSMS(option,(ListSms)=>{
-        this.smsList = ListSms 
-      },
-      Error => {
-        alert(JSON.stringify(Error))
-      });
-    });     
+      if (SMS) SMS.listSMS(filter, (listSMS)=>{
+          this.smsList = listSMS
+          // alert("Read");
+        },
+          Error => {
+            alert(JSON.stringify(Error))
+          });
+    });
   }
 }
